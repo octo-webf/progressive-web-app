@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
@@ -9,9 +9,21 @@
     <link rel="manifest" href="./static/manifest.json">
 
     <title>microblog-vuejs2</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+</head>
+<body>
+<div id="app"></div>
+<!-- built files will be auto injected -->
+
+<!-- Register to service worker-->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./static/sw.js')
+      .then((reg) => {
+        console.log("Yes, it did.");
+      }).catch((err) => {
+        console.log("No it didn't. This happened: ", err);
+      });
+  }
+</script>
+</body>
 </html>
