@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import Vue from 'vue';
 import Messages from 'components/Messages';
 
@@ -6,7 +7,7 @@ describe('components', () => {
     sinon.stub(Messages, 'data').returns({
       newMessage: "I'm the new message",
       pseudo: 'Plopauthor',
-      apiURL: 'http://microblog-api.herokuapp.com/api/messages',
+      apiURL: 'https://microblog-api.herokuapp.com/api/messages',
     });
 
     const Constructor = Vue.extend(Messages);
@@ -28,7 +29,7 @@ describe('components', () => {
         expect(promiseCall).to.have.been.called;
         expect(promiseCall).to.have.been.calledWith({
           method: 'get',
-          url: 'http://microblog-api.herokuapp.com/api/messages',
+          url: 'https://microblog-api.herokuapp.com/api/messages',
         });
 
         Vue.http.restore();
@@ -49,7 +50,7 @@ describe('components', () => {
             author: 'Plopauthor',
             content: "I'm the new message",
           },
-          url: 'http://microblog-api.herokuapp.com/api/messages',
+          url: 'https://microblog-api.herokuapp.com/api/messages',
         });
 
         Vue.http.restore();

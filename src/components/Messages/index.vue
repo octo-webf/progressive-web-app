@@ -11,7 +11,7 @@
         messages: null,
         pseudo: Auth.pseudo(),
         newMessage: '',
-        apiURL: 'http://microblog-api.herokuapp.com/api/messages',
+        apiURL: 'https://microblog-api.herokuapp.com/api/messages',
       };
     },
 
