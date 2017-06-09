@@ -8,7 +8,7 @@ import router from './router';
 
 Vue.use(VueResource);
 Vue.use(VueI18n);
-Vue.config.lang = (window.location.pathname === '/en/' ? 'en' : 'fr');
+Vue.config.lang = (window.location.pathname === '/en/' ? 'en' : 'fra');
 
 /* eslint-disable no-new */
 new Vue({
