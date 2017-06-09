@@ -26,3 +26,7 @@ npm test
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 # microblog-vuejs2
+
+
+# For push on gh-pages branch
+git subtree push --prefix dist origin gh-pages
