@@ -19,7 +19,7 @@ shell.rm('-rf', assetsPath)
 shell.mkdir('-p', assetsPath)
 shell.config.silent = true
 shell.cp('-R', 'static/*', assetsPath)
-shell.mv(assetsPath+'/sw.js', config.build.assetsRoot)
+shell.cp('sw.js', config.build.assetsRoot)
 shell.config.silent = false
 
 webpack(webpackConfig, function (err, stats) {
