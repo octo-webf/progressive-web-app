@@ -17,7 +17,7 @@
 <!-- Register to service worker-->
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./static/sw.js', {scope: '/progressive-web-app'})
+    navigator.serviceWorker.register('./sw.js')
       .then((reg) => {
         console.log("Yes, it did.");
       }).catch((err) => {
