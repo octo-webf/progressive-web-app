@@ -1,0 +1,9 @@
+{
+  "name": "microblog-progressive-web-app",
+  "version": "1.0.0",
+  "description": "atelier progressive web app",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install express"
+  }
+}
