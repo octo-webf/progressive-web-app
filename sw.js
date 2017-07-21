@@ -4,6 +4,7 @@ self.addEventListener('install', (e) => {
     .then(cache => cache.addAll([
       '/',
       '/static/js/app.js',
+      '/static/js/manifest.js',
       '/static/js/vendor.js',
       '/static/css/app.css',
       '/static/fonts/fontawesome-webfont.eot',
