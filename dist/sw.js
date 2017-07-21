@@ -2,6 +2,7 @@ self.addEventListener('install', (e) => {
   console.log('install');
   e.waitUntil(caches.open('assets')
     .then(cache => cache.addAll([
+      '/',
       '/static/js/app.js',
       '/static/js/vendor.js',
       '/static/css/app.css',
@@ -9,7 +10,7 @@ self.addEventListener('install', (e) => {
       '/static/fonts/fontawesome-webfont.ttf',
       '/static/fonts/fontawesome-webfont.woff',
       '/static/fonts/fontawesome-webfont.woff2',
-      '/static/img/fontawesome-webfont.svg',
+      '/static/img/fontawesome-webfont.svg'
     ])));
 });
 
