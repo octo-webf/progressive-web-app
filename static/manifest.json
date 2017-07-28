@@ -1,7 +1,7 @@
 {
   "name": "Micro-blog - PWA",
   "short_name": "mb-pwa",
-  "start_url": "/progressive-web-app",
+  "start_url": "/",
   "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#4cc1fc",
