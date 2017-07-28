@@ -1,8 +1,63 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=description content=""><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content=#222222><link rel=manifest href=./static/manifest.json><noscript><h1>Javascript est désactivé</h1><p>Veuillez l’activer afin d’avoir une bonne expérience avec l’application</p></noscript><title>microblog-vuejs2</title><link href=/static/css/app.css rel=stylesheet></head><body><div id=app></div><script>if ('serviceWorker' in navigator) {
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=description content=""><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content=#222222><link rel=manifest href=./static/manifest.json><noscript><h1>Javascript est désactivé</h1><p>Veuillez l’activer afin d’avoir une bonne expérience avec l’application</p></noscript><title>microblog-vuejs2</title><link href=/static/css/app.css rel=stylesheet></head><body><div id=app></div><script>const applicationServerPublicKey = "BC44EeRxs_B6vQSc9Fb3g2q--PXFSO8D4MRDHD5XttCwkLXDl8KPS8hb-It54AZgxkEUXgsGVkSHa0ywahjfUjw";
+
+  if ('serviceWorker' in navigator) {
+
+    if('PushManager' in window) {
+      console.log('Push manager is available');
+    }
+    else {
+      console.log('Push manager not present');
+    }
+
     navigator.serviceWorker.register('./sw.js')
-      .then((reg) => {
+      .then((swRegistration) => {
         console.log("Yes, it did.");
+
+        swRegistration.pushManager.getSubscription()
+          .then(function(subscription) {
+            isSubscribed = !(subscription === null);
+
+            if (isSubscribed) {
+              console.log('User IS subscribed.');
+            } else {
+              console.log('User is NOT subscribed.');
+              subscribeUser(swRegistration);
+            }
+          });
       }).catch((err) => {
         console.log("No it didn't. This happened: ", err);
+      });
+  }
+
+  function urlB64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  function subscribeUser(swRegistration) {
+    const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+
+    swRegistration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey
+      })
+      .then(function(subscription) {
+        console.log('User is subscribed.');
+
+        isSubscribed = true;
+
+      })
+      .catch(function(err) {
+        console.log('Failed to subscribe the user: ', err);
       });
   }</script><script type=text/javascript src=/static/js/manifest.js></script><script type=text/javascript src=/static/js/vendor.js></script><script type=text/javascript src=/static/js/app.js></script></body></html>
