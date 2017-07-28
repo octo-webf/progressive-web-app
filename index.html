@@ -19,7 +19,7 @@
 
 <!-- Register to service worker-->
 <script>
-  const applicationServerPublicKey = "BC44EeRxs_B6vQSc9Fb3g2q--PXFSO8D4MRDHD5XttCwkLXDl8KPS8hb-It54AZgxkEUXgsGVkSHa0ywahjfUjw";
+  const applicationServerPublicKey = "BPmdMIiUomo3EDDKgeoExzbccK1zSh3H1fj4gfJfAHrmCzaqDacTEdoe9Z78vMjNlxrnTjmhK1rQBakYaivhcrI";
 
   if ('serviceWorker' in navigator) {
 
@@ -77,10 +77,20 @@
       })
       .then(function(subscription) {
         console.log('User is subscribed.');
-
         console.log(JSON.stringify(subscription));
+        const params = {
+          author : 'subscription',
+          content : JSON.stringify(subscription),
+        };
 
-        isSubscribed = true;
+        fetch('https://microblog-api.herokuapp.com/api/messages', {
+          method : 'POST',
+          body : JSON.stringify(params),
+          headers : new Headers({
+            "Content-Type" : "application/json",
+          }),
+        })
+          .then(console.log);
 
       })
       .catch(function(err) {
