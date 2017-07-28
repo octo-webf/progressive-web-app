@@ -13,9 +13,12 @@
       .then((swRegistration) => {
         console.log("Yes, it did.");
 
+        console.log(swRegistration);
+
         swRegistration.pushManager.getSubscription()
           .then(function(subscription) {
             isSubscribed = !(subscription === null);
+
 
             if (isSubscribed) {
               console.log('User IS subscribed.');
@@ -53,6 +56,8 @@
       })
       .then(function(subscription) {
         console.log('User is subscribed.');
+
+        console.log(JSON.stringify(subscription));
 
         isSubscribed = true;
 
