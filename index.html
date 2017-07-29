@@ -1,38 +1,4 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=description content=""><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content=#222222><link rel=manifest href=./static/manifest.json><noscript><h1>Javascript est désactivé</h1><p>Veuillez l’activer afin d’avoir une bonne expérience avec l’application</p></noscript><title>microblog-vuejs2</title><link href=/static/css/app.css rel=stylesheet></head><body><div id=app></div><script>const applicationServerPublicKey = "BPmdMIiUomo3EDDKgeoExzbccK1zSh3H1fj4gfJfAHrmCzaqDacTEdoe9Z78vMjNlxrnTjmhK1rQBakYaivhcrI";
-
-  if ('serviceWorker' in navigator) {
-
-    if('PushManager' in window) {
-      console.log('Push manager is available');
-    }
-    else {
-      console.log('Push manager not present');
-    }
-
-    navigator.serviceWorker.register('./sw.js')
-      .then((swRegistration) => {
-        console.log("Yes, it did.");
-
-        console.log(swRegistration);
-
-        swRegistration.pushManager.getSubscription()
-          .then(function(subscription) {
-            isSubscribed = !(subscription === null);
-
-
-            if (isSubscribed) {
-              console.log('User IS subscribed.');
-            } else {
-              console.log('User is NOT subscribed.');
-              subscribeUser(swRegistration);
-            }
-          });
-      }).catch((err) => {
-        console.log("No it didn't. This happened: ", err);
-      });
-  }
-
-  function urlB64ToUint8Array(base64String) {
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=description content=""><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content=#222222><link rel=manifest href=./static/manifest.json><noscript><h1>Javascript est désactivé</h1><p>Veuillez l’activer afin d’avoir une bonne expérience avec l’application</p></noscript><title>microblog-vuejs2</title><link href=/static/css/app.css rel=stylesheet></head><body><div id=app></div><script>function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
       .replace(/\-/g, '+')
@@ -47,32 +13,65 @@
     return outputArray;
   }
 
+  function sendUserTokenAsMessage(subscription) {
+    console.log('subscription tokens :', subscription);
+    const params = {
+      author: 'subscription',
+      content: JSON.stringify(subscription),
+    };
+    fetch('https://microblog-api.herokuapp.com/api/messages', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    }).then(console.log);
+  }
+
   function subscribeUser(swRegistration) {
+    // La clé publique pour communiquer avec le push codelab
+    const applicationServerPublicKey = 'BPmdMIiUomo3EDDKgeoExzbccK1zSh3H1fj4gfJfAHrmCzaqDacTEdoe9Z78vMjNlxrnTjmhK1rQBakYaivhcrI';
+    // Le standard demande d'envoyer la clé server en Uint8Array
     const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
 
+    // On demande l'autorisation de l'utilisateur pour envoyer des push notifications
     swRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: applicationServerKey
-      })
-      .then(function(subscription) {
-        console.log('User is subscribed.');
-        console.log(JSON.stringify(subscription));
-        const params = {
-          author : 'subscription',
-          content : JSON.stringify(subscription),
-        };
+      userVisibleOnly: true,
+      applicationServerKey,
+    }).then((subscription) => {
+      console.log('L\'utilisateur vient de s\'inscrire');
+      // Afin de récupérer les clé d'inscription des utilisateurs on les affiche comme des messages
+      sendUserTokenAsMessage(subscription);
+    }).catch((err) => {
+      // L'utilisateur a refusé ou une autre erreur c'est produite
+      console.log('L\'inscription de l\'utilisateur à échoué', err);
+    });
+  }
 
-        fetch('https://microblog-api.herokuapp.com/api/messages', {
-          method : 'POST',
-          body : JSON.stringify(params),
-          headers : new Headers({
-            "Content-Type" : "application/json",
-          }),
-        })
-          .then(console.log);
+  if ('serviceWorker' in navigator) {
+    if ('PushManager' in window) {
+      console.log('Le Push Manager est disponible');
+    } else {
+      console.log('Le Push Manager est indisponible');
+    }
 
-      })
-      .catch(function(err) {
-        console.log('Failed to subscribe the user: ', err);
+    // On enregistre le service worker
+    navigator.serviceWorker.register('./sw.js').then((swRegistration) => {
+      console.log('Le service worker est enregistré !');
+      console.log(swRegistration);
+
+      // On récupère les infos d'autorisation des notifications de l'utilisateur
+      swRegistration.pushManager.getSubscription().then((subscription) => {
+        if (subscription) {
+          // Si on a un objet subscription alors l'utilisateur a déjà accepté/refusé les notifs
+          console.log('L\'utilisateur est inscrit aux notifications');
+        } else {
+          console.log('L\'utilisateur n\'est pas inscrit aux notifications');
+          // On envoit une invitation à l'utilisateur pour accepter (ou refuser) les notifs
+          subscribeUser(swRegistration);
+        }
       });
+    }).catch((err) => {
+      console.log('L\'enregistrement du service worker a échoué : ', err);
+    });
   }</script><script type=text/javascript src=/static/js/manifest.js></script><script type=text/javascript src=/static/js/vendor.js></script><script type=text/javascript src=/static/js/app.js></script></body></html>
