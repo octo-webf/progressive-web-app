@@ -1,3 +1,10 @@
+/*
+  Offline AppShell Architecture
+ */
+const assetsCacheName = 'assets';
+const messagesCacheName = 'messages';
+
+
 // Sera déclenché quand le service worker sera installé
 self.addEventListener('install', (event) => {
   console.log('Le service worker est installé');
@@ -18,7 +25,7 @@ self.addEventListener('install', (event) => {
   //
   event.waitUntil(
     // Ouverture du cache ayant le namespace "assets"
-    caches.open('assets').then(
+    caches.open(assetsCacheName).then(
       // Appel réseau de tous nos assets et mise en cache du résultat
       cache => cache.addAll(staticAssets),
     ),
@@ -29,16 +36,30 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   console.log('appel : ', event.request.url);
 
-  // Ouverture du cache ayant le namespace "assets"
-  const response = caches.open('assets')
-  // On regarde si on a, dans le cache, une entrée qui correspond à notre requête
-    .then(cache => cache.match(event.request))
-    .then((cacheResponse) => {
-      // Si on a une entrée, on renvoit l'entrée de cache, sinon on effectue l'appel réseau
-      return cacheResponse || fetch(event.request);
-    });
-  event.respondWith(response);
+  const messagesApiUrl = 'https://microblog-api.herokuapp.com/api/messages';
+  if (event.request.url.indexOf(messagesApiUrl) > -1 && event.request.method === 'GET') {
+    event.respondWith(
+      caches.open(messagesCacheName).then((cache) => {
+        return fetch(event.request).then((response) => {
+          cache.put(event.request.url, response.clone());
+          return response;
+        });
+      }),
+    );
+  } else {
+    // On regarde si on a, dans le cache, une entrée qui correspond à notre requête
+    event.respondWith(
+      caches.match(event.request).then((responseCache) => {
+        // Si on a une entrée, on renvoit l'entrée de cache, sinon on effectue l'appel réseau
+        return responseCache || fetch(event.request);
+      }),
+    );
+  }
 });
+
+/*
+  Push notifications
+ */
 
 // Sera déclenché quand le SW recevra un évènement push depuis l'extérieur
 self.addEventListener('push', (event) => {
