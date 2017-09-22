@@ -27,8 +27,8 @@ self.addEventListener('install', (event) => {
     // Ouverture du cache ayant le namespace "assets"
     caches.open(assetsCacheName).then(
       // Appel réseau de tous nos assets et mise en cache du résultat
-      cache => cache.addAll(staticAssets),
-    ),
+      cache => cache.addAll(staticAssets)
+    )
   );
 });
 
@@ -44,7 +44,7 @@ self.addEventListener('fetch', (event) => {
           cache.put(event.request.url, response.clone());
           return response;
         });
-      }),
+      })
     );
   } else {
     // On regarde si on a, dans le cache, une entrée qui correspond à notre requête
@@ -52,7 +52,7 @@ self.addEventListener('fetch', (event) => {
       caches.match(event.request).then((responseCache) => {
         // Si on a une entrée, on renvoit l'entrée de cache, sinon on effectue l'appel réseau
         return responseCache || fetch(event.request);
-      }),
+      })
     );
   }
 });
